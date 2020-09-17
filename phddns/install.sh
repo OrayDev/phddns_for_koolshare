@@ -39,32 +39,26 @@ exit_install(){
         esac
 }
 
-
 # 判断路由架构和平台
 case $(uname -m) in
-        aarch64)
-                if [ "$(uname -o|grep Merlin)" -a -d "/koolshare" ];then
-                        echo_date 机型：$MODEL $(_get_type) 符合安装要求1
-                else
-                        exit_install 1
-                fi
-                ;;
-        armv7l)
-                if [ "$MODEL" == "TUF-AX3000" -o "$MODEL" == "RT-AX82U" ] && [ -d "/koolshare" ];then
-                        # 这里是armv7l 384官改固件
-                        echo_date 机型：$MODEL $(_get_type) 符合安装要求2
-                elif [ "`uname -o|grep Merlin`" ] && [ -d "/koolshare" ] && [ -n "`nvram get buildno|grep 384`" ];then
-                        # 这里是armv7l 384梅林固件
-                        echo_date 机型：$MODEL $(_get_type) 符合安装要求3
-                else
-                        exit_install 1
-                fi
-                ;;
-        *)
-                exit_install 1
+    aarch64)
+        if [ "$(uname -o|grep Merlin)" -a -d "/koolshare" ];then
+            echo_date 机型：$MODEL $(_get_type) 符合安装要求，开始安装插件！
+        else
+            exit_install 1
+        fi
         ;;
+    armv7l)
+        if [ "$MODEL" == "TUF-AX3000" -o "$MODEL" == "RT-AX82U" -o "$MODEL" == "RT-AX95Q" -o "$MODEL" == "RT-AX56_XD4" ] && [ -d "/koolshare" ];then
+            echo_date 机型：$MODEL $(_get_type) 符合安装要求，开始安装插件！
+        else
+            exit_install 1
+        fi
+        ;;
+    *)
+        exit_install 1
+    ;;
 esac
-
 
 # stop phddns first
 killall -9 phddns_daemon.sh > /dev/null 2>&1
